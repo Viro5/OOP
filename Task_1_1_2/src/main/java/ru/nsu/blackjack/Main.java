@@ -1,11 +1,16 @@
 package ru.nsu.blackjack;
 
-import java.util.Scanner;
-
+/**
+ * Точка входа в приложение.
+ */
 public class Main {
+    /**
+     * Главный метод, запускающий игру Блэкджек.
+     *
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Game game = new Game();
-        game.start(scanner);
+        game.start();
     }
 }

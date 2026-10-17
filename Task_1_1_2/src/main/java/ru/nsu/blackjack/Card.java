@@ -1,29 +1,43 @@
 package ru.nsu.blackjack;
 
+/**
+ * Класс, представляющий игровую карту.
+ */
 public class Card {
     private final Suit suit;
     private final Rank rank;
 
+    /**
+     * Конструктор карты.
+     *
+     * @param suit масть карты
+     * @param rank достоинство карты
+     */
     public Card(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
     }
 
-    public Suit getSuit() {
-        return suit;
-    }
-
+    /**
+     * Возвращает достоинство карты.
+     *
+     * @return достоинство карты
+     */
     public Rank getRank() {
         return rank;
     }
 
+    /**
+     * Возвращает стоимость карты в очках.
+     *
+     * @return количество очков
+     */
     public int getValue() {
         return rank.getValue();
     }
 
     @Override
     public String toString() {
-        // Убираем (11) из имени карты, так как итоговый счет и так пишется в конце строки: > 12
-        return rank.getName() + " of " + suit.getName();
+        return rank + " of " + suit;
     }
 }

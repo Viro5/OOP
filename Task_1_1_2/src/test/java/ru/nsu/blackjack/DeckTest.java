@@ -1,22 +1,18 @@
 package ru.nsu.blackjack;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class DeckTest {
-
-    @Test
-    void testDeckSize() {
-        Deck deck = new Deck();
-        assertEquals(52, deck.cardsLeft());
-    }
+/**
+ * Юнит-тесты для класса Deck.
+ */
+public class DeckTest {
 
     @Test
-    void testDrawCard() {
+    public void testDrawCard() {
         Deck deck = new Deck();
         Card card = deck.drawCard();
         assertNotNull(card);
-        assertEquals(51, deck.cardsLeft());
     }
 }

@@ -2,153 +2,105 @@ package ru.nsu.blackjack;
 
 import java.util.Scanner;
 
+/**
+ * Класс, управляющий основным игровым циклом Блэкджека.
+ */
 public class Game {
     private final Deck deck;
     private final Player player;
     private final Player dealer;
-    private int playerScore;
-    private int dealerScore;
-    private int roundNumber;
+    private final Scanner scanner;
 
+    /**
+     * Конструктор игры.
+     */
     public Game() {
         this.deck = new Deck();
-        this.player = new Player("You", false);
-        this.dealer = new Player("Dealer", true);
-        this.playerScore = 0;
-        this.dealerScore = 0;
-        this.roundNumber = 0;
+        this.player = new Player("Player");
+        this.dealer = new Player("Dealer");
+        this.scanner = new Scanner(System.in);
     }
 
-    public void start(Scanner scanner) {
+    /**
+     * Запускает игровой процесс.
+     */
+    public void start() {
         System.out.println("Welcome to Blackjack!");
 
-        boolean continueGame = true;
-        while (continueGame) {
-            roundNumber++;
-            playRound(scanner);
-
-            System.out.println("\nDo you want to play another round? (1 - Yes, 0 - No)");
-            String input = scanner.nextLine().trim();
-            if ("0".equals(input)) {
-                continueGame = false;
-            }
-        }
-
-        System.out.println("\nThanks for playing! Final score: " + playerScore + ":" + dealerScore);
-    }
-
-    public void playRound(Scanner scanner) {
-        System.out.println("\nRound " + roundNumber);
-        player.resetHand();
-        dealer.resetHand();
-
-        player.getHand().addCard(deck.drawCard());
-        dealer.getHand().addCard(deck.drawCard());
-        player.getHand().addCard(deck.drawCard());
-        dealer.getHand().addCard(deck.drawCard());
-
-        System.out.println("Dealer dealt cards");
-        printState(false);
-
-        boolean playerBj = player.getHand().isBlackjack();
-        boolean dealerBj = dealer.getHand().isBlackjack();
-
-        if (playerBj || dealerBj) {
-            System.out.println("\n--- Round Result ---");
-            printState(true);
-
-            if (playerBj && dealerBj) {
-                System.out.println("Push! Both players have Blackjack.");
-            } else if (playerBj) {
-                System.out.println("Blackjack! You win the round!");
-                playerScore++;
-            } else {
-                System.out.println("Dealer has Blackjack! Dealer wins the round!");
-                dealerScore++;
-            }
-            printTotalScore();
-            return;
-        }
-
-        boolean playerBust = handlePlayerTurn(scanner);
-
-        if (playerBust) {
-            System.out.println("Bust! You lose the round.");
-            dealerScore++;
-            printTotalScore();
-            return;
-        }
-
-        handleDealerTurn();
-        determineWinner();
-        printTotalScore();
-    }
-
-    private boolean handlePlayerTurn(Scanner scanner) {
-        System.out.println("\nYour Turn\n-------");
+        int round = 1;
         while (true) {
-            System.out.print("Type \"1\" to Hit, or \"0\" to Stand: ");
-            String choice = scanner.nextLine().trim();
+            System.out.println("\n--- Round " + round + " ---");
+            playRound();
 
-            if ("1".equals(choice)) {
-                Card drawn = deck.drawCard();
-                player.getHand().addCard(drawn);
-                System.out.println("You drew: " + drawn);
-                printState(false);
-
-                if (player.getHand().isBust()) {
-                    return true;
-                }
-            } else if ("0".equals(choice)) {
+            System.out.print("\nDo you want to play again? (1 - yes, 0 - no): ");
+            int choice = scanner.nextInt();
+            if (choice != 1) {
                 break;
+            }
+            round++;
+        }
+
+        System.out.println("Thanks for playing!");
+    }
+
+    /**
+     * Проводит один раунд игры.
+     */
+    private void playRound() {
+        player.getHand().clear();
+        dealer.getHand().clear();
+
+        player.getHand().addCard(deck.drawCard());
+        player.getHand().addCard(deck.drawCard());
+
+        dealer.getHand().addCard(deck.drawCard());
+        dealer.getHand().addCard(deck.drawCard());
+
+        System.out.println("You were dealt: " + player.getHand().getCard(0)
+                + " and " + player.getHand().getCard(1));
+        System.out.println("Dealer's cards: " + dealer.getHand().getCard(0) + " and <hidden card>");
+
+        // Ход игрока
+        while (true) {
+            System.out.println("Your score: " + player.getHand().calculateScore());
+            if (player.getHand().calculateScore() >= 21) {
+                break;
+            }
+
+            System.out.print("Enter 1 to hit, or 0 to stand: ");
+            int choice = scanner.nextInt();
+            if (choice == 1) {
+                Card card = deck.drawCard();
+                player.getHand().addCard(card);
+                System.out.println("You drew: " + card);
             } else {
-                System.out.println("Invalid input! Please enter 1 or 0.");
+                break;
             }
         }
-        return false;
-    }
 
-    private void handleDealerTurn() {
-        System.out.println("\nDealer's Turn\n-------");
-        System.out.println("Dealer reveals hidden card: " + dealer.getHand().getCards().get(1));
-        printState(true);
-
-        while (dealer.getHand().calculateScore() < 17) {
-            Card drawn = deck.drawCard();
-            dealer.getHand().addCard(drawn);
-            System.out.println("Dealer draws: " + drawn);
-            printState(true);
+        int playerScore = player.getHand().calculateScore();
+        if (playerScore > 21) {
+            System.out.println("Bust! You lost.");
+            return;
         }
-    }
 
-    private void determineWinner() {
-        int pScore = player.getHand().calculateScore();
-        int dScore = dealer.getHand().calculateScore();
+        // Ход дилера
+        System.out.println("\nDealer reveals hidden card: " + dealer.getHand().getCard(1));
+        while (dealer.getHand().calculateScore() < 17) {
+            Card card = deck.drawCard();
+            dealer.getHand().addCard(card);
+            System.out.println("Dealer draws: " + card);
+        }
 
-        System.out.println("\n--- Round Results ---");
-        if (dealer.getHand().isBust()) {
-            System.out.println("Dealer busted! You win the round!");
-            playerScore++;
-        } else if (pScore > dScore) {
-            System.out.println("You win the round!");
-            playerScore++;
-        } else if (dScore > pScore) {
-            System.out.println("Dealer wins the round!");
-            dealerScore++;
+        int dealerScore = dealer.getHand().calculateScore();
+        System.out.println("Dealer's score: " + dealerScore);
+
+        if (dealerScore > 21 || playerScore > dealerScore) {
+            System.out.println("You win!");
+        } else if (playerScore < dealerScore) {
+            System.out.println("Dealer wins!");
         } else {
             System.out.println("It's a tie!");
         }
-    }
-
-    private void printState(boolean revealDealerCard) {
-        System.out.println("Your cards: " + player.getHand().toString(true)
-                + " > " + player.getHand().calculateScore());
-        System.out.println("Dealer cards: " + dealer.getHand().toString(revealDealerCard)
-                + (revealDealerCard ? " > " + dealer.getHand().calculateScore() : ""));
-    }
-
-    private void printTotalScore() {
-        System.out.println("Score " + playerScore + ":" + dealerScore + " ("
-                + (playerScore >= dealerScore ? "Player leads" : "Dealer leads") + ").");
     }
 }

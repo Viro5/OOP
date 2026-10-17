@@ -1,18 +1,11 @@
 package ru.nsu.blackjack;
 
+/**
+ * Перечисление мастей карт.
+ */
 public enum Suit {
-    SPADES("Spades"),
-    HEARTS("Hearts"),
-    DIAMONDS("Diamonds"),
-    CLUBS("Clubs");
-
-    private final String name;
-
-    Suit(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+    CLUBS,
+    DIAMONDS,
+    HEARTS,
+    SPADES
 }

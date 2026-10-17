@@ -3,21 +3,45 @@ package ru.nsu.blackjack;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс, представляющий руку игрока или дилера (набор карт).
+ */
 public class Hand {
     private final List<Card> cards = new ArrayList<>();
 
+    /**
+     * Добавляет карту в руку.
+     *
+     * @param card карта для добавления
+     */
     public void addCard(Card card) {
         cards.add(card);
     }
 
-    public List<Card> getCards() {
-        return cards;
+    /**
+     * Возвращает карту из руки по индексу.
+     *
+     * @param index индекс карты
+     * @return карта по указанному индексу
+     */
+    public Card getCard(int index) {
+        return cards.get(index);
     }
 
-    public void clear() {
-        cards.clear();
+    /**
+     * Возвращает количество карт в руке.
+     *
+     * @return количество карт
+     */
+    public int size() {
+        return cards.size();
     }
 
+    /**
+     * Вычисляет суммарное количество очков карт в руке с учетом Тузов.
+     *
+     * @return сумма очков
+     */
     public int calculateScore() {
         int score = 0;
         int aces = 0;
@@ -37,30 +61,10 @@ public class Hand {
         return score;
     }
 
-    public boolean isBust() {
-        return calculateScore() > 21;
-    }
-
-    public boolean isBlackjack() {
-        return cards.size() == 2 && calculateScore() == 21;
-    }
-
-    public String toString(boolean revealAll) {
-        if (cards.isEmpty()) {
-            return "[]";
-        }
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < cards.size(); i++) {
-            if (i == 1 && !revealAll) {
-                sb.append("<hidden card>");
-            } else {
-                sb.append(cards.get(i));
-            }
-            if (i < cards.size() - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
+    /**
+     * Очищает руку от карт.
+     */
+    public void clear() {
+        cards.clear();
     }
 }
