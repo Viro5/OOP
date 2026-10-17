@@ -20,9 +20,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Make gradlew executable
-        run: chmod +x Task_1_1_2/gradlew
+        run: chmod +x Task_1_2_1/gradlew
 
-      - name: Build Task 1.1.2
+      - name: Build Task 1.2.1
         run: |
-          cd Task_1_1_2
+          cd Task_1_2_1
           ./gradlew build

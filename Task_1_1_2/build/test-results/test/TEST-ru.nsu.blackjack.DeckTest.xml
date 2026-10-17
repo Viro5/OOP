@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ru.nsu.blackjack.DeckTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-27T14:36:19.357Z" hostname="OK-LAPTOP" time="0.06">
+  <properties/>
+  <testcase name="testDrawCard()" classname="ru.nsu.blackjack.DeckTest" time="0.028"/>
+  <testcase name="testDeckSize()" classname="ru.nsu.blackjack.DeckTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

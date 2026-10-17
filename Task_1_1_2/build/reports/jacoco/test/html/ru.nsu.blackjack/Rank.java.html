@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Rank.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Task_1_1_2</a> &gt; <a href="index.source.html" class="el_package">ru.nsu.blackjack</a> &gt; <span class="el_source">Rank.java</span></div><h1>Rank.java</h1><pre class="source lang-java linenums">package ru.nsu.blackjack;
+
+<span class="fc" id="L3">public enum Rank {</span>
+<span class="fc" id="L4">    TWO(&quot;Two&quot;, 2),</span>
+<span class="fc" id="L5">    THREE(&quot;Three&quot;, 3),</span>
+<span class="fc" id="L6">    FOUR(&quot;Four&quot;, 4),</span>
+<span class="fc" id="L7">    FIVE(&quot;Five&quot;, 5),</span>
+<span class="fc" id="L8">    SIX(&quot;Six&quot;, 6),</span>
+<span class="fc" id="L9">    SEVEN(&quot;Seven&quot;, 7),</span>
+<span class="fc" id="L10">    EIGHT(&quot;Eight&quot;, 8),</span>
+<span class="fc" id="L11">    NINE(&quot;Nine&quot;, 9),</span>
+<span class="fc" id="L12">    TEN(&quot;Ten&quot;, 10),</span>
+<span class="fc" id="L13">    JACK(&quot;Jack&quot;, 10),</span>
+<span class="fc" id="L14">    QUEEN(&quot;Queen&quot;, 10),</span>
+<span class="fc" id="L15">    KING(&quot;King&quot;, 10),</span>
+<span class="fc" id="L16">    ACE(&quot;Ace&quot;, 11);</span>
+
+    private final String name;
+    private final int value;
+
+<span class="fc" id="L21">    Rank(String name, int value) {</span>
+<span class="fc" id="L22">        this.name = name;</span>
+<span class="fc" id="L23">        this.value = value;</span>
+<span class="fc" id="L24">    }</span>
+
+    public String getName() {
+<span class="nc" id="L27">        return name;</span>
+    }
+
+    public int getValue() {
+<span class="fc" id="L31">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

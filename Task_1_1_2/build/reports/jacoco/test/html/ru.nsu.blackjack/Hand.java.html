@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Hand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Task_1_1_2</a> &gt; <a href="index.source.html" class="el_package">ru.nsu.blackjack</a> &gt; <span class="el_source">Hand.java</span></div><h1>Hand.java</h1><pre class="source lang-java linenums">package ru.nsu.blackjack;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L6">public class Hand {</span>
+<span class="fc" id="L7">    private final List&lt;Card&gt; cards = new ArrayList&lt;&gt;();</span>
+
+    public void addCard(Card card) {
+<span class="fc" id="L10">        cards.add(card);</span>
+<span class="fc" id="L11">    }</span>
+
+    public List&lt;Card&gt; getCards() {
+<span class="nc" id="L14">        return cards;</span>
+    }
+
+    public void clear() {
+<span class="nc" id="L18">        cards.clear();</span>
+<span class="nc" id="L19">    }</span>
+
+    public int calculateScore() {
+<span class="fc" id="L22">        int score = 0;</span>
+<span class="fc" id="L23">        int aces = 0;</span>
+
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        for (Card card : cards) {</span>
+<span class="fc" id="L26">            score += card.getValue();</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">            if (card.getRank() == Rank.ACE) {</span>
+<span class="fc" id="L28">                aces++;</span>
+            }
+<span class="fc" id="L30">        }</span>
+
+<span class="fc bfc" id="L32" title="All 4 branches covered.">        while (score &gt; 21 &amp;&amp; aces &gt; 0) {</span>
+<span class="fc" id="L33">            score -= 10;</span>
+<span class="fc" id="L34">            aces--;</span>
+        }
+
+<span class="fc" id="L37">        return score;</span>
+    }
+
+    public boolean isBust() {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        return calculateScore() &gt; 21;</span>
+    }
+
+    public boolean isBlackjack() {
+<span class="nc bnc" id="L45" title="All 4 branches missed.">        return cards.size() == 2 &amp;&amp; calculateScore() == 21;</span>
+    }
+
+    public String toString(boolean revealAll) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (cards.isEmpty()) {</span>
+<span class="nc" id="L50">            return &quot;[]&quot;;</span>
+        }
+<span class="nc" id="L52">        StringBuilder sb = new StringBuilder(&quot;[&quot;);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        for (int i = 0; i &lt; cards.size(); i++) {</span>
+<span class="nc bnc" id="L54" title="All 4 branches missed.">            if (i == 1 &amp;&amp; !revealAll) {</span>
+<span class="nc" id="L55">                sb.append(&quot;&lt;hidden card&gt;&quot;);</span>
+            } else {
+<span class="nc" id="L57">                sb.append(cards.get(i));</span>
+            }
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (i &lt; cards.size() - 1) {</span>
+<span class="nc" id="L60">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+<span class="nc" id="L63">        sb.append(&quot;]&quot;);</span>
+<span class="nc" id="L64">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
