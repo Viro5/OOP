@@ -1,20 +1,25 @@
 package graph;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
+ * Unit tests for graph implementations and utilities.
+ */
 public class GraphTest {
 
-    // предоставляет все комбинации реализаций графа для тестов
     static Stream<Graph<String>> stringGraphProvider() {
         return Stream.of(
                 new AdjacencyListGraph<>(),
@@ -23,6 +28,11 @@ public class GraphTest {
         );
     }
 
+    /**
+     * Tests basic graph operations.
+     *
+     * @param graph the graph instance
+     */
     @ParameterizedTest
     @MethodSource("stringGraphProvider")
     public void testBasicOperations(Graph<String> graph) {
@@ -43,6 +53,11 @@ public class GraphTest {
         assertFalse(graph.getVertices().contains("C"));
     }
 
+    /**
+     * Tests topological sorting.
+     *
+     * @param graph the graph instance
+     */
     @ParameterizedTest
     @MethodSource("stringGraphProvider")
     public void testTopologicalSort(Graph<String> graph) {
@@ -60,6 +75,11 @@ public class GraphTest {
         assertTrue(indexB < indexC);
     }
 
+    /**
+     * Tests cycle detection in topological sorting.
+     *
+     * @param graph the graph instance
+     */
     @ParameterizedTest
     @MethodSource("stringGraphProvider")
     public void testTopologicalSortCycleDetection(Graph<String> graph) {
@@ -71,6 +91,12 @@ public class GraphTest {
         });
     }
 
+    /**
+     * Tests reading graph from file.
+     *
+     * @param graph the graph instance
+     * @throws IOException if I/O error occurs
+     */
     @ParameterizedTest
     @MethodSource("stringGraphProvider")
     public void testReadFromFile(Graph<String> graph) throws IOException {
@@ -85,7 +111,19 @@ public class GraphTest {
         Files.deleteIfExists(tempFile);
     }
 
-    // отдельный тест для проверки работы с другим типом данных (например, Integer)
+    static Stream<Graph<Integer>> integerGraphProvider() {
+        return Stream.of(
+                new AdjacencyListGraph<>(),
+                new AdjacencyMatrixGraph<>(),
+                new IncidenceMatrixGraph<>()
+        );
+    }
+
+    /**
+     * Tests graph with integer type.
+     *
+     * @param graph the graph instance
+     */
     @ParameterizedTest
     @MethodSource("integerGraphProvider")
     public void testIntegerGraph(Graph<Integer> graph) {
@@ -98,13 +136,5 @@ public class GraphTest {
         List<Integer> sorted = GraphUtils.topologicalSort(graph);
         assertTrue(sorted.indexOf(10) < sorted.indexOf(20));
         assertTrue(sorted.indexOf(20) < sorted.indexOf(30));
-    }
-
-    static Stream<Graph<Integer>> integerGraphProvider() {
-        return Stream.of(
-                new AdjacencyListGraph<>(),
-                new AdjacencyMatrixGraph<>(),
-                new IncidenceMatrixGraph<>()
-        );
     }
 }

@@ -1,84 +1,78 @@
 package graph;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class AdjacencyListGraph<V> implements Graph<V> {
-    private final Map<V, List<V>> adjacencyMap = new HashMap<>();
+/**
+ * Graph implementation using adjacency lists.
+ *
+ * @param <T> the vertex type
+ */
+public class AdjacencyListGraph<T> implements Graph<T> {
+    private final Map<T, List<T>> adjacencyList = new HashMap<>();
 
     @Override
-    public void addVertex(V vertex) {
-        adjacencyMap.putIfAbsent(vertex, new ArrayList<>());
+    public void addVertex(T vertex) {
+        adjacencyList.putIfAbsent(vertex, new ArrayList<>());
     }
 
     @Override
-    public void removeVertex(V vertex) {
-        adjacencyMap.remove(vertex);
-        for (List<V> neighbors : adjacencyMap.values()) {
+    public void removeVertex(T vertex) {
+        adjacencyList.remove(vertex);
+        for (List<T> neighbors : adjacencyList.values()) {
             neighbors.remove(vertex);
         }
     }
 
     @Override
-    public void addEdge(V source, V destination) {
+    public void addEdge(T source, T destination) {
         addVertex(source);
         addVertex(destination);
-        List<V> neighbors = adjacencyMap.get(source);
+        List<T> neighbors = adjacencyList.get(source);
         if (!neighbors.contains(destination)) {
             neighbors.add(destination);
         }
     }
 
     @Override
-    public void removeEdge(V source, V destination) {
-        if (adjacencyMap.containsKey(source)) {
-            adjacencyMap.get(source).remove(destination);
+    public void removeEdge(T source, T destination) {
+        List<T> neighbors = adjacencyList.get(source);
+        if (neighbors != null) {
+            neighbors.remove(destination);
         }
     }
 
     @Override
-    public List<V> getNeighbors(V vertex) {
-        return adjacencyMap.getOrDefault(vertex, Collections.emptyList());
+    public Collection<T> getVertices() {
+        return adjacencyList.keySet();
     }
 
     @Override
-    public List<V> getVertices() {
-        return new ArrayList<>(adjacencyMap.keySet());
+    public Collection<T> getNeighbors(T vertex) {
+        return adjacencyList.getOrDefault(vertex, new ArrayList<>());
     }
 
     @Override
-    public void readFromFile(String filepath) throws IOException {
-        GraphUtils.readGraphFromFile(this, filepath, s -> (V) s);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Graph)) return false;
-        Graph<?> graph = (Graph<?>) o;
-
-        List<V> vertices = this.getVertices();
-        List<?> otherVertices = graph.getVertices();
-        if (!new HashSet<>(vertices).equals(new HashSet<>(otherVertices))) {
-            return false;
-        }
-        for (V v : vertices) {
-            // Используем приведение к Graph для безопасного вызова getNeighbors с типом V
-            List<?> otherNeighbors = ((Graph<Object>) graph).getNeighbors(v);
-            if (!new HashSet<>(this.getNeighbors(v)).equals(new HashSet<>(otherNeighbors))) {
-                return false;
+    public void readFromFile(String filename) throws IOException {
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length >= 2) {
+                    @SuppressWarnings("unchecked")
+                    T source = (T) parts[0];
+                    @SuppressWarnings("unchecked")
+                    T dest = (T) parts[1];
+                    addEdge(source, dest);
+                }
             }
         }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(adjacencyMap);
-    }
-
-    @Override
-    public String toString() {
-        return "AdjacencyListGraph{adjacencyMap=" + adjacencyMap + "}";
     }
 }

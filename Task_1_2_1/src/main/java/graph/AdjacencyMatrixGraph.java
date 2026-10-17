@@ -1,122 +1,103 @@
 package graph;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class AdjacencyMatrixGraph<V> implements Graph<V> {
-    private final List<V> vertices = new ArrayList<>();
-    private final List<List<Boolean>> matrix = new ArrayList<>();
+/**
+ * Graph implementation using an adjacency matrix.
+ *
+ * @param <T> the vertex type
+ */
+public class AdjacencyMatrixGraph<T> implements Graph<T> {
+    private final List<T> vertices = new ArrayList<>();
+    private final List<List<Integer>> matrix = new ArrayList<>();
 
     @Override
-    public void addVertex(V vertex) {
-        if (vertices.contains(vertex)) {
-            return;
+    public void addVertex(T vertex) {
+        if (!vertices.contains(vertex)) {
+            vertices.add(vertex);
+            for (List<Integer> row : matrix) {
+                row.add(0);
+            }
+            List<Integer> newRow = new ArrayList<>();
+            for (int i = 0; i < vertices.size(); i++) {
+                newRow.add(0);
+            }
+            matrix.add(newRow);
         }
-        vertices.add(vertex);
-
-        // добавляем новую колонку во все существующие строки
-        for (List<Boolean> row : matrix) {
-            row.add(false);
-        }
-
-        // создаем новую строку для новой вершины
-        List<Boolean> newRow = new ArrayList<>();
-        for (int i = 0; i < vertices.size(); i++) {
-            newRow.add(false);
-        }
-        matrix.add(newRow);
     }
 
     @Override
-    public void removeVertex(V vertex) {
+    public void removeVertex(T vertex) {
         int index = vertices.indexOf(vertex);
-        if (index == -1) {
-            return;
-        }
-
-        vertices.remove(index);
-        matrix.remove(index);
-
-        // удаляем соответствующий столбец из всех строк
-        for (List<Boolean> row : matrix) {
-            row.remove(index);
+        if (index != -1) {
+            vertices.remove(index);
+            matrix.remove(index);
+            for (List<Integer> row : matrix) {
+                row.remove(index);
+            }
         }
     }
 
     @Override
-    public void addEdge(V source, V destination) {
+    public void addEdge(T source, T destination) {
         addVertex(source);
         addVertex(destination);
-
         int srcIndex = vertices.indexOf(source);
         int destIndex = vertices.indexOf(destination);
-
-        matrix.get(srcIndex).set(destIndex, true);
+        matrix.get(srcIndex).set(destIndex, 1);
     }
 
     @Override
-    public void removeEdge(V source, V destination) {
+    public void removeEdge(T source, T destination) {
         int srcIndex = vertices.indexOf(source);
         int destIndex = vertices.indexOf(destination);
-
         if (srcIndex != -1 && destIndex != -1) {
-            matrix.get(srcIndex).set(destIndex, false);
+            matrix.get(srcIndex).set(destIndex, 0);
         }
     }
 
     @Override
-    public List<V> getNeighbors(V vertex) {
-        List<V> neighbors = new ArrayList<>();
-        int index = vertices.indexOf(vertex);
-        if (index == -1) {
-            return neighbors;
-        }
+    public Collection<T> getVertices() {
+        return new ArrayList<>(vertices);
+    }
 
-        List<Boolean> row = matrix.get(index);
-        for (int i = 0; i < row.size(); i++) {
-            if (row.get(i)) {
-                neighbors.add(vertices.get(i));
+    @Override
+    public Collection<T> getNeighbors(T vertex) {
+        List<T> neighbors = new ArrayList<>();
+        int index = vertices.indexOf(vertex);
+        if (index != -1) {
+            List<Integer> row = matrix.get(index);
+            for (int i = 0; i < row.size(); i++) {
+                if (row.get(i) == 1) {
+                    neighbors.add(vertices.get(i));
+                }
             }
         }
         return neighbors;
     }
 
     @Override
-    public List<V> getVertices() {
-        return new ArrayList<>(vertices);
-    }
-
-    @Override
-    public void readFromFile(String filepath) throws IOException {
-        GraphUtils.readGraphFromFile(this, filepath, s -> (V) s);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Graph<?> graph)) return false;
-
-        List<?> otherVertices = graph.getVertices();
-        if (!new HashSet<>(vertices).equals(new HashSet<>(otherVertices))) {
-            return false;
-        }
-
-        for (V v : vertices) {
-            List<?> otherNeighbors = ((Graph<Object>) graph).getNeighbors(v);
-            if (!new HashSet<>(this.getNeighbors(v)).equals(new HashSet<>(otherNeighbors))) {
-                return false;
+    public void readFromFile(String filename) throws IOException {
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length >= 2) {
+                    @SuppressWarnings("unchecked")
+                    T source = (T) parts[0];
+                    @SuppressWarnings("unchecked")
+                    T dest = (T) parts[1];
+                    addEdge(source, dest);
+                }
             }
         }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(vertices, matrix);
-    }
-
-    @Override
-    public String toString() {
-        return "AdjacencyMatrixGraph{vertices=" + vertices + ", matrix=" + matrix + "}";
     }
 }

@@ -1,29 +1,65 @@
 package graph;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
 
-//общий интерфейс для работы с ориентированным/неориентированным графом
-public interface Graph<V> {
+/**
+ * Interface representing a directed graph with vertices of type T.
+ *
+ * @param <T> the type of vertex
+ */
+public interface Graph<T> {
 
-    //добавляет вершину в граф
-    void addVertex(V vertex);
+    /**
+     * Adds a vertex to the graph.
+     *
+     * @param vertex the vertex to add
+     */
+    void addVertex(T vertex);
 
-    //удаляет вершину и все связанные с ней рёбра
-    void removeVertex(V vertex);
+    /**
+     * Removes a vertex and all its incident edges.
+     *
+     * @param vertex the vertex to remove
+     */
+    void removeVertex(T vertex);
 
-    //добавляет ребро между двумя вершинами
-    void addEdge(V source, V destination);
+    /**
+     * Adds a directed edge between source and destination.
+     *
+     * @param source      the source vertex
+     * @param destination the destination vertex
+     */
+    void addEdge(T source, T destination);
 
-    //удаляет ребро между двумя вершинами
-    void removeEdge(V source, V destination);
+    /**
+     * Removes a directed edge between source and destination.
+     *
+     * @param source      the source vertex
+     * @param destination the destination vertex
+     */
+    void removeEdge(T source, T destination);
 
-    //возвращает список всех "соседей" (выходящих вершин) для данной вершины
-    List<V> getNeighbors(V vertex);
+    /**
+     * Returns a collection of all vertices in the graph.
+     *
+     * @return collection of vertices
+     */
+    Collection<T> getVertices();
 
-    //возвращает список всех вершин графа
-    List<V> getVertices();
+    /**
+     * Returns a collection of neighboring vertices for a given vertex.
+     *
+     * @param vertex the vertex
+     * @return collection of neighbors
+     */
+    Collection<T> getNeighbors(T vertex);
 
-    //считывает граф из файла определенного формата
-    void readFromFile(String filepath) throws IOException;
+    /**
+     * Reads graph edges from a file.
+     *
+     * @param filename the path to the file
+     * @throws IOException if an I/O error occurs
+     */
+    void readFromFile(String filename) throws IOException;
 }
