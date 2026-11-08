@@ -2,7 +2,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main", "master", "task-1-1-2" ]
+    branches: [ "main", "master", "task-*" ]
   pull_request:
     branches: [ "main", "master" ]
 
@@ -20,9 +20,14 @@ jobs:
           distribution: 'temurin'
 
       - name: Make gradlew executable
-        run: chmod +x Task_1_1_2/gradlew
+        run: find . -name gradlew -exec chmod +x {} \;
 
-      - name: Build Task 1.1.2
+      - name: Build all tasks
         run: |
-          cd Task_1_1_2
-          ./gradlew build
+          # Ищем все папки, начинающиеся с Task_, и собираем их
+          for dir in Task_*/; do
+            if [ -f "$dir/gradlew" ]; then
+              echo "Сборка проекта в $dir"
+              (cd "$dir" && ./gradlew build)
+            fi
+          done
