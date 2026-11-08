@@ -204,10 +204,10 @@ public class HashTable<K, V> implements Map<K, V>, Iterable<MapEntry<K, V>> {
         while (iterator.hasNext()) {
             MapEntry<K, V> entry = iterator.next();
             if (Objects.equals(entry.getKey(), key)) {
-                V value = entry.getValue();
                 iterator.remove();
                 size--;
                 modCount++;
+                V value = entry.getValue();
                 return value;
             }
         }
@@ -367,7 +367,7 @@ public class HashTable<K, V> implements Map<K, V>, Iterable<MapEntry<K, V>> {
     @SuppressWarnings("unchecked")
     private void resize() {
         int newCapacity = capacity * 2;
-        LinkedList<MapEntry<K, V>>[] oldTable = table;
+        final LinkedList<MapEntry<K, V>>[] oldTable = table;
         table = new LinkedList[newCapacity];
         capacity = newCapacity;
         size = 0;
