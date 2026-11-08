@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="graph.GraphTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-17T01:11:09.193Z" hostname="OK-LAPTOP" time="0.147">
+  <properties/>
+  <testcase name="[1] AdjacencyListGraph{adjacencyMap={}}" classname="graph.GraphTest" time="0.04"/>
+  <testcase name="[2] AdjacencyMatrixGraph{vertices=[], matrix=[]}" classname="graph.GraphTest" time="0.004"/>
+  <testcase name="[3] IncidenceMatrixGraph{vertices=[], edges=0, matrix=[]}" classname="graph.GraphTest" time="0.006"/>
+  <testcase name="[1] AdjacencyListGraph{adjacencyMap={}}" classname="graph.GraphTest" time="0.004"/>
+  <testcase name="[2] AdjacencyMatrixGraph{vertices=[], matrix=[]}" classname="graph.GraphTest" time="0.001"/>
+  <testcase name="[3] IncidenceMatrixGraph{vertices=[], edges=0, matrix=[]}" classname="graph.GraphTest" time="0.001"/>
+  <testcase name="[1] AdjacencyListGraph{adjacencyMap={}}" classname="graph.GraphTest" time="0.001"/>
+  <testcase name="[2] AdjacencyMatrixGraph{vertices=[], matrix=[]}" classname="graph.GraphTest" time="0.0"/>
+  <testcase name="[3] IncidenceMatrixGraph{vertices=[], edges=0, matrix=[]}" classname="graph.GraphTest" time="0.0"/>
+  <testcase name="[1] AdjacencyListGraph{adjacencyMap={}}" classname="graph.GraphTest" time="0.002"/>
+  <testcase name="[2] AdjacencyMatrixGraph{vertices=[], matrix=[]}" classname="graph.GraphTest" time="0.001"/>
+  <testcase name="[3] IncidenceMatrixGraph{vertices=[], edges=0, matrix=[]}" classname="graph.GraphTest" time="0.0"/>
+  <testcase name="[1] AdjacencyListGraph{adjacencyMap={}}" classname="graph.GraphTest" time="0.001"/>
+  <testcase name="[2] AdjacencyMatrixGraph{vertices=[], matrix=[]}" classname="graph.GraphTest" time="0.001"/>
+  <testcase name="[3] IncidenceMatrixGraph{vertices=[], edges=0, matrix=[]}" classname="graph.GraphTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

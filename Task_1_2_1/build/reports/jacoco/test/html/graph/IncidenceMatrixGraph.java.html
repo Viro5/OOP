@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IncidenceMatrixGraph.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Task_1_2_1</a> &gt; <a href="index.source.html" class="el_package">graph</a> &gt; <span class="el_source">IncidenceMatrixGraph.java</span></div><h1>IncidenceMatrixGraph.java</h1><pre class="source lang-java linenums">package graph;
+
+import java.io.IOException;
+import java.util.*;
+
+<span class="fc" id="L6">public class IncidenceMatrixGraph&lt;V&gt; implements Graph&lt;V&gt; {</span>
+<span class="fc" id="L7">    private final List&lt;V&gt; vertices = new ArrayList&lt;&gt;();</span>
+    // список рёбер, где каждое ребро — это пара [source, destination]
+<span class="fc" id="L9">    private final List&lt;Edge&lt;V&gt;&gt; edges = new ArrayList&lt;&gt;();</span>
+    // матрица: строки — вершины, столбцы — рёбра
+<span class="fc" id="L11">    private final List&lt;List&lt;Integer&gt;&gt; matrix = new ArrayList&lt;&gt;();</span>
+
+    private static class Edge&lt;V&gt; {
+        V source;
+        V destination;
+
+<span class="fc" id="L17">        Edge(V source, V destination) {</span>
+<span class="fc" id="L18">            this.source = source;</span>
+<span class="fc" id="L19">            this.destination = destination;</span>
+<span class="fc" id="L20">        }</span>
+    }
+
+    @Override
+    public void addVertex(V vertex) {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (vertices.contains(vertex)) {</span>
+<span class="fc" id="L26">            return;</span>
+        }
+<span class="fc" id="L28">        vertices.add(vertex);</span>
+<span class="fc" id="L29">        List&lt;Integer&gt; newRow = new ArrayList&lt;&gt;();</span>
+        // заполняем нулями для всех существующих рёбер
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (int i = 0; i &lt; edges.size(); i++) {</span>
+<span class="fc" id="L32">            newRow.add(0);</span>
+        }
+<span class="fc" id="L34">        matrix.add(newRow);</span>
+<span class="fc" id="L35">    }</span>
+
+    @Override
+    public void removeVertex(V vertex) {
+<span class="fc" id="L39">        int index = vertices.indexOf(vertex);</span>
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (index == -1) {</span>
+<span class="nc" id="L41">            return;</span>
+        }
+
+        // удаляем все рёбра, связанные с этой вершиной
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = edges.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L46">            Edge&lt;V&gt; edge = edges.get(i);</span>
+<span class="pc bpc" id="L47" title="2 of 4 branches missed.">            if (edge.source.equals(vertex) || edge.destination.equals(vertex)) {</span>
+<span class="fc" id="L48">                removeEdge(edge.source, edge.destination);</span>
+            }
+        }
+
+<span class="fc" id="L52">        vertices.remove(index);</span>
+<span class="fc" id="L53">        matrix.remove(index);</span>
+<span class="fc" id="L54">    }</span>
+
+    @Override
+    public void addEdge(V source, V destination) {
+<span class="fc" id="L58">        addVertex(source);</span>
+<span class="fc" id="L59">        addVertex(destination);</span>
+
+        // проверяем, нет ли уже такого ребра
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (Edge&lt;V&gt; edge : edges) {</span>
+<span class="pc bpc" id="L63" title="1 of 4 branches missed.">            if (edge.source.equals(source) &amp;&amp; edge.destination.equals(destination)) {</span>
+<span class="nc" id="L64">                return;</span>
+            }
+<span class="fc" id="L66">        }</span>
+
+<span class="fc" id="L68">        edges.add(new Edge&lt;&gt;(source, destination));</span>
+<span class="fc" id="L69">        int srcIndex = vertices.indexOf(source);</span>
+<span class="fc" id="L70">        int destIndex = vertices.indexOf(destination);</span>
+
+        // добавляем новый столбец во все строки матрицы
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        for (int i = 0; i &lt; vertices.size(); i++) {</span>
+<span class="fc" id="L74">            int val = 0;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            if (i == srcIndex) val = -1;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            else if (i == destIndex) val = 1;</span>
+<span class="fc" id="L77">            matrix.get(i).add(val);</span>
+        }
+<span class="fc" id="L79">    }</span>
+
+    @Override
+    public void removeEdge(V source, V destination) {
+<span class="fc" id="L83">        int edgeIndex = -1;</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        for (int i = 0; i &lt; edges.size(); i++) {</span>
+<span class="fc" id="L85">            Edge&lt;V&gt; edge = edges.get(i);</span>
+<span class="pc bpc" id="L86" title="2 of 4 branches missed.">            if (edge.source.equals(source) &amp;&amp; edge.destination.equals(destination)) {</span>
+<span class="fc" id="L87">                edgeIndex = i;</span>
+<span class="fc" id="L88">                break;</span>
+            }
+        }
+
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (edgeIndex == -1) {</span>
+<span class="nc" id="L93">            return;</span>
+        }
+
+<span class="fc" id="L96">        edges.remove(edgeIndex);</span>
+        // удаляем соответствующий столбец из каждой строки матрицы
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (List&lt;Integer&gt; row : matrix) {</span>
+<span class="fc" id="L99">            row.remove(edgeIndex);</span>
+<span class="fc" id="L100">        }</span>
+<span class="fc" id="L101">    }</span>
+
+    @Override
+    public List&lt;V&gt; getNeighbors(V vertex) {
+<span class="fc" id="L105">        List&lt;V&gt; neighbors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L106">        int srcIndex = vertices.indexOf(vertex);</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (srcIndex == -1) {</span>
+<span class="nc" id="L108">            return neighbors;</span>
+        }
+
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        for (int j = 0; j &lt; edges.size(); j++) {</span>
+            // если в строке нашей вершины стоит -1, значит, ребро исходит из неё
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            if (matrix.get(srcIndex).get(j) == -1) {</span>
+<span class="fc" id="L114">                Edge&lt;V&gt; edge = edges.get(j);</span>
+<span class="fc" id="L115">                neighbors.add(edge.destination);</span>
+            }
+        }
+<span class="fc" id="L118">        return neighbors;</span>
+    }
+
+    @Override
+    public List&lt;V&gt; getVertices() {
+<span class="fc" id="L123">        return new ArrayList&lt;&gt;(vertices);</span>
+    }
+
+    @Override
+    public void readFromFile(String filepath) throws IOException {
+<span class="fc" id="L128">        GraphUtils.readGraphFromFile(this, filepath, s -&gt; (V) s);</span>
+<span class="fc" id="L129">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (!(o instanceof Graph&lt;?&gt; graph)) return false;</span>
+
+<span class="nc" id="L136">        List&lt;?&gt; otherVertices = graph.getVertices();</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (!new HashSet&lt;&gt;(vertices).equals(new HashSet&lt;&gt;(otherVertices))) {</span>
+<span class="nc" id="L138">            return false;</span>
+        }
+
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        for (V v : vertices) {</span>
+<span class="nc" id="L142">            List&lt;?&gt; otherNeighbors = ((Graph&lt;Object&gt;) graph).getNeighbors(v);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">            if (!new HashSet&lt;&gt;(this.getNeighbors(v)).equals(new HashSet&lt;&gt;(otherNeighbors))) {</span>
+<span class="nc" id="L144">                return false;</span>
+            }
+<span class="nc" id="L146">        }</span>
+<span class="nc" id="L147">        return true;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L152">        return Objects.hash(vertices, edges, matrix);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L157">        return &quot;IncidenceMatrixGraph{vertices=&quot; + vertices + &quot;, edges=&quot; + edges.size() + &quot;, matrix=&quot; + matrix + &quot;}&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
