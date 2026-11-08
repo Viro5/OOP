@@ -1,6 +1,17 @@
 package hashmap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Параметризованный контейнер, реализующий структуру данных хеш-таблица.
@@ -289,7 +300,6 @@ public class HashTable<K, V> implements Map<K, V>, Iterable<MapEntry<K, V>> {
         private Iterator<MapEntry<K, V>> currentBucketIterator = null;
         private MapEntry<K, V> lastReturned = null;
         private MapEntry<K, V> nextElement = null;
-        private boolean hasNextCalled = false;
 
         HashTableIterator() {
             this.expectedModCount = modCount;
@@ -319,7 +329,6 @@ public class HashTable<K, V> implements Map<K, V>, Iterable<MapEntry<K, V>> {
         @Override
         public boolean hasNext() {
             checkForComodification();
-            hasNextCalled = true;
             return nextElement != null;
         }
 
@@ -331,7 +340,6 @@ public class HashTable<K, V> implements Map<K, V>, Iterable<MapEntry<K, V>> {
             }
             lastReturned = nextElement;
             findNext();
-            hasNextCalled = false;
             return lastReturned;
         }
 
@@ -394,10 +402,16 @@ public class HashTable<K, V> implements Map<K, V>, Iterable<MapEntry<K, V>> {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Map)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Map)) {
+            return false;
+        }
         Map<?, ?> other = (Map<?, ?>) o;
-        if (other.size() != size()) return false;
+        if (other.size() != size()) {
+            return false;
+        }
 
         try {
             for (Map.Entry<K, V> entry : entrySet()) {
