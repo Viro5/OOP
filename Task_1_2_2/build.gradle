@@ -11,20 +11,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0') // Поправили актуальную стабильную версию JUnit 5 BOM
+    testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-jacocoTestReport {
-    dependsOn test // Отчет строится только после успешного прогона тестов
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-    }
+test {
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
 
-javadoc {
-    options.encoding = 'UTF-8'
-    destinationDir = file("$buildDir/docs/javadoc")
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
