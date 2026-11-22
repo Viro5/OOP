@@ -1,0 +1,33 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main", "master", "task-*" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: find . -name gradlew -exec chmod +x {} \;
+
+      - name: Build all tasks
+        run: |
+          # Ищем все папки, начинающиеся с Task_, и собираем их
+          for dir in Task_*/; do
+            if [ -f "$dir/gradlew" ]; then
+              echo "Сборка проекта в $dir"
+              (cd "$dir" && ./gradlew build)
+            fi
+          done

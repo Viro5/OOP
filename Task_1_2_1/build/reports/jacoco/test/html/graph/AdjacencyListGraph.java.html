@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdjacencyListGraph.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Task_1_2_1</a> &gt; <a href="index.source.html" class="el_package">graph</a> &gt; <span class="el_source">AdjacencyListGraph.java</span></div><h1>AdjacencyListGraph.java</h1><pre class="source lang-java linenums">package graph;
+
+import java.io.IOException;
+import java.util.*;
+
+<span class="fc" id="L6">public class AdjacencyListGraph&lt;V&gt; implements Graph&lt;V&gt; {</span>
+<span class="fc" id="L7">    private final Map&lt;V, List&lt;V&gt;&gt; adjacencyMap = new HashMap&lt;&gt;();</span>
+
+    @Override
+    public void addVertex(V vertex) {
+<span class="fc" id="L11">        adjacencyMap.putIfAbsent(vertex, new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L12">    }</span>
+
+    @Override
+    public void removeVertex(V vertex) {
+<span class="fc" id="L16">        adjacencyMap.remove(vertex);</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        for (List&lt;V&gt; neighbors : adjacencyMap.values()) {</span>
+<span class="fc" id="L18">            neighbors.remove(vertex);</span>
+<span class="fc" id="L19">        }</span>
+<span class="fc" id="L20">    }</span>
+
+    @Override
+    public void addEdge(V source, V destination) {
+<span class="fc" id="L24">        addVertex(source);</span>
+<span class="fc" id="L25">        addVertex(destination);</span>
+<span class="fc" id="L26">        List&lt;V&gt; neighbors = adjacencyMap.get(source);</span>
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        if (!neighbors.contains(destination)) {</span>
+<span class="fc" id="L28">            neighbors.add(destination);</span>
+        }
+<span class="fc" id="L30">    }</span>
+
+    @Override
+    public void removeEdge(V source, V destination) {
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if (adjacencyMap.containsKey(source)) {</span>
+<span class="fc" id="L35">            adjacencyMap.get(source).remove(destination);</span>
+        }
+<span class="fc" id="L37">    }</span>
+
+    @Override
+    public List&lt;V&gt; getNeighbors(V vertex) {
+<span class="fc" id="L41">        return adjacencyMap.getOrDefault(vertex, Collections.emptyList());</span>
+    }
+
+    @Override
+    public List&lt;V&gt; getVertices() {
+<span class="fc" id="L46">        return new ArrayList&lt;&gt;(adjacencyMap.keySet());</span>
+    }
+
+    @Override
+    public void readFromFile(String filepath) throws IOException {
+<span class="fc" id="L51">        GraphUtils.readGraphFromFile(this, filepath, s -&gt; (V) s);</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (!(o instanceof Graph)) return false;</span>
+<span class="nc" id="L58">        Graph&lt;?&gt; graph = (Graph&lt;?&gt;) o;</span>
+
+<span class="nc" id="L60">        List&lt;V&gt; vertices = this.getVertices();</span>
+<span class="nc" id="L61">        List&lt;?&gt; otherVertices = graph.getVertices();</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (!new HashSet&lt;&gt;(vertices).equals(new HashSet&lt;&gt;(otherVertices))) {</span>
+<span class="nc" id="L63">            return false;</span>
+        }
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        for (V v : vertices) {</span>
+            // Используем приведение к Graph для безопасного вызова getNeighbors с типом V
+<span class="nc" id="L67">            List&lt;?&gt; otherNeighbors = ((Graph&lt;Object&gt;) graph).getNeighbors(v);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (!new HashSet&lt;&gt;(this.getNeighbors(v)).equals(new HashSet&lt;&gt;(otherNeighbors))) {</span>
+<span class="nc" id="L69">                return false;</span>
+            }
+<span class="nc" id="L71">        }</span>
+<span class="nc" id="L72">        return true;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L77">        return Objects.hash(adjacencyMap);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L82">        return &quot;AdjacencyListGraph{adjacencyMap=&quot; + adjacencyMap + &quot;}&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
