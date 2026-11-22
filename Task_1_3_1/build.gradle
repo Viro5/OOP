@@ -1,34 +1,39 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'checkstyle'
+    id 'application'
 }
 
-group = 'org.example'
+group = 'ru.nsu.oop'
 version = '1.0-SNAPSHOT'
+
+application {
+    mainClass = 'SubstringFinder'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:6.0.0')
+    testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport // Автоматически делать отчет о покрытии после тестов
+    finalizedBy 'jacocoTestReport'
 }
 
 jacocoTestReport {
+    dependsOn test
     reports {
         xml.required = true
+        html.required = true
     }
 }
 
-checkstyle {
-    ignoreFailures = false
-    maxWarnings = 0
+run {
+    standardInput = System.in
 }
