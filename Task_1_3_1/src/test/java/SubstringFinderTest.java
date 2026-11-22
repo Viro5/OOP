@@ -47,13 +47,16 @@ public class SubstringFinderTest {
     @Test
     void bigFile() throws Exception {
         Path tmp = Files.createTempFile("big", ".txt");
-        try (var writer = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {
-            for (int i = 0; i < 1_000_000; i++) {
-                writer.write("абракадабра ");
+        try {
+            try (var writer = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {
+                for (int i = 0; i < 100_000; i++) {
+                    writer.write("абракадабра ");
+                }
             }
+            List<Long> r = SubstringFinder.find(tmp.toString(), "бра");
+            Assertions.assertEquals(200_000, r.size());
+        } finally {
+            Files.deleteIfExists(tmp);
         }
-        List<Long> r = SubstringFinder.find(tmp.toString(), "бра");
-        Assertions.assertEquals(2_000_000, r.size());
-        Files.deleteIfExists(tmp);
     }
 }

@@ -53,14 +53,11 @@ public class SubstringFinder {
                     from = idx + 1;
                 }
 
-                // Вычисляем, сколько символов можно безопасно выбросить
                 int safe = Math.max(0, totalLen - (m - 1));
-                // Откатываемся назад, если разрезали символ
                 while (safe > 0 && safe < totalLen && isContinuation(buf[safe])) {
                     safe--;
                 }
 
-                // ВАЖНО: считаем символы ТОЛЬКО в той части, которую выбрасываем (от 0 до safe)
                 symbolsBefore += countSymbols(buf, safe);
 
                 tailLen = totalLen - safe;
