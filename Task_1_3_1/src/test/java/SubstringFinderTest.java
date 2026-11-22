@@ -1,9 +1,14 @@
-import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Tests for SubstringFinder.
+ */
 public class SubstringFinderTest {
 
     @Test
@@ -11,7 +16,7 @@ public class SubstringFinderTest {
         Path tmp = Files.createTempFile("small", ".txt");
         try {
             Files.writeString(tmp, "абракадабра", StandardCharsets.UTF_8);
-            assertEquals(List.of(1L, 8L), SubstringFinder.find(tmp.toString(), "бра"));
+            Assertions.assertEquals(List.of(1L, 8L), SubstringFinder.find(tmp.toString(), "бра"));
         } finally {
             Files.deleteIfExists(tmp);
         }
@@ -22,7 +27,7 @@ public class SubstringFinderTest {
         Path tmp = Files.createTempFile("ov", ".txt");
         try {
             Files.writeString(tmp, "аааа", StandardCharsets.UTF_8);
-            assertEquals(List.of(0L, 1L), SubstringFinder.find(tmp.toString(), "аа"));
+            Assertions.assertEquals(List.of(0L, 1L, 2L), SubstringFinder.find(tmp.toString(), "аа"));
         } finally {
             Files.deleteIfExists(tmp);
         }
@@ -33,7 +38,7 @@ public class SubstringFinderTest {
         Path tmp = Files.createTempFile("short", ".txt");
         try {
             Files.writeString(tmp, "hi", StandardCharsets.UTF_8);
-            assertEquals(List.of(), SubstringFinder.find(tmp.toString(), "hello"));
+            Assertions.assertEquals(List.of(), SubstringFinder.find(tmp.toString(), "hello"));
         } finally {
             Files.deleteIfExists(tmp);
         }
@@ -42,11 +47,13 @@ public class SubstringFinderTest {
     @Test
     void bigFile() throws Exception {
         Path tmp = Files.createTempFile("big", ".txt");
-        try (var w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {
-            for (int i = 0; i < 1_000_000; i++) w.write("абракадабра ");
+        try (var writer = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {
+            for (int i = 0; i < 1_000_000; i++) {
+                writer.write("абракадабра ");
+            }
         }
         List<Long> r = SubstringFinder.find(tmp.toString(), "бра");
-        assertEquals(2_000_000, r.size());
+        Assertions.assertEquals(2_000_000, r.size());
         Files.deleteIfExists(tmp);
     }
 }
