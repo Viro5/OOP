@@ -29,6 +29,7 @@ public class SubstringFinder {
             return result;
         }
 
+        // Буфер фиксированного размера + запас на хвост
         byte[] buf = new byte[CHUNK_SIZE + m - 1];
         long symbolsBefore = 0;
         int tailLen = 0;
@@ -53,9 +54,17 @@ public class SubstringFinder {
                     from = idx + 1;
                 }
 
+                // Отступаем на m-1, но гарантируем, что не уйдем в отрицательные значения
                 int safe = Math.max(0, totalLen - (m - 1));
+
+                // Если попали в середину UTF-8 символа, отступаем назад
                 while (safe > 0 && safe < totalLen && isContinuation(buf[safe])) {
                     safe--;
+                }
+
+                // КРИТИЧНО: хвост не может быть больше размера буфера!
+                if (totalLen - safe > buf.length - CHUNK_SIZE) {
+                    safe = totalLen - (buf.length - CHUNK_SIZE);
                 }
 
                 symbolsBefore += countSymbols(buf, safe);

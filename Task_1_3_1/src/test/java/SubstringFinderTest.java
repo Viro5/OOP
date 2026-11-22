@@ -56,7 +56,11 @@ public class SubstringFinderTest {
             List<Long> r = SubstringFinder.find(tmp.toString(), "бра");
             Assertions.assertEquals(200_000, r.size());
         } finally {
-            Files.deleteIfExists(tmp);
+            try {
+                Files.deleteIfExists(tmp);
+            } catch (Exception ignored) {
+                // Игнорируем возможную блокировку файла в Linux (GitHub Actions)
+            }
         }
     }
 }
