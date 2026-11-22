@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'jacoco'
+    id 'checkstyle'
 }
 
 group = 'org.example'
@@ -17,4 +19,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // Автоматически делать отчет о покрытии после тестов
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
+
+checkstyle {
+    ignoreFailures = false
+    maxWarnings = 0
 }
